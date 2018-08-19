@@ -46,6 +46,7 @@ import mediathek.gui.dialog.DialogAddMoreDownload;
 import mediathek.gui.dialog.DialogEditAbo;
 import mediathek.gui.messages.StartEvent;
 import mediathek.gui.messages.UpdateStatusBarLeftDisplayEvent;
+import mediathek.javafx.FXDescriptionPanel;
 import mediathek.javafx.filterpanel.FilmActionPanel;
 import mediathek.tool.*;
 import mediathek.tool.cellrenderer.CellRendererFilme;
@@ -125,9 +126,8 @@ public class GuiFilme extends PanelVorlage {
     private final JFXPanel fxPanel = new JFXPanel();
 
     private void setupDescriptionPanel() {
-        PanelFilmBeschreibung panelBeschreibung = new PanelFilmBeschreibung(daten, tabelle, true /*film*/);
         jPanelBeschreibung.setLayout(new BorderLayout());
-        jPanelBeschreibung.add(panelBeschreibung, BorderLayout.CENTER);
+        jPanelBeschreibung.add(new FXDescriptionPanel(), BorderLayout.CENTER);
     }
 
     /**
