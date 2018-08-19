@@ -10,8 +10,11 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import jfxtras.scene.menu.CirclePopupMenu;
+import mediathek.config.Daten;
 import org.controlsfx.glyphfont.GlyphFont;
 import org.controlsfx.glyphfont.GlyphFontRegistry;
+
+import javax.swing.*;
 
 public class FXDescriptionPanel extends JFXPanel {
     public FXDescriptionPanel() {
@@ -48,7 +51,11 @@ public class FXDescriptionPanel extends JFXPanel {
         menu.getItems().add(mi);
 
         descTab.setContent(webView);
-        //descTab.setClosable(false);
+        descTab.setOnClosed(e -> SwingUtilities.invokeLater(() -> {
+                    getParent().remove(this);
+                    Daten.getInstance().getMediathekGui().tabFilme.updateUI();
+                }
+        ));
 
         return new Scene(tabPane);
     }
