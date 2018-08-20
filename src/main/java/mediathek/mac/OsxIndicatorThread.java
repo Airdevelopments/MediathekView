@@ -10,8 +10,7 @@ import java.util.concurrent.TimeUnit;
  */
 class OsxIndicatorThread extends IndicatorThread {
 
-    private boolean bFirstUpdate = true;
-    private double oldPercentage;
+    private int oldPercentage;
 
     public OsxIndicatorThread() {
         super();
@@ -20,32 +19,27 @@ class OsxIndicatorThread extends IndicatorThread {
 
     @Override
     public void run() {
+        Taskbar.getTaskbar().setProgressValue(0);
+
         try {
             while (!isInterrupted()) {
-                final double percentage = calculateOverallPercentage();
-
-                if (bFirstUpdate) {
-                    Taskbar.getTaskbar().setProgressValue(0);
-                    bFirstUpdate = false;
-                }
+                final int percentage = (int) calculateOverallPercentage();
 
                 //update in 1pct steps...
-                if (percentage % 1 == 0) {
-                    //if icon was already drawn, don´ do it again
-                    if (oldPercentage != percentage) {
-                        final int percent = (int)percentage;
-                        Taskbar.getTaskbar().setProgressValue(percent);
-                    }
-
-                    oldPercentage = percentage;
+                //if icon was already drawn, don´ do it again
+                if (oldPercentage != percentage) {
+                    Taskbar.getTaskbar().setProgressValue(percentage);
                 }
+
+                oldPercentage = percentage;
+
                 TimeUnit.MILLISECONDS.sleep(500);
             }
         } catch (Exception ignored) {
         } finally {
             //reset the application dock icon
-            Taskbar.getTaskbar().setProgressValue(100);
-            oldPercentage = 0.0;
+            Taskbar.getTaskbar().setProgressValue(-1);
+            oldPercentage = 0;
         }
     }
 }
