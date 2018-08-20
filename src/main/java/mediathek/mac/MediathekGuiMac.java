@@ -1,6 +1,5 @@
 package mediathek.mac;
 
-import com.apple.eawt.Application;
 import com.jidesoft.utils.SystemInfo;
 import mSearch.tool.Log;
 import mediathek.MediathekGui;
@@ -89,11 +88,10 @@ public class MediathekGuiMac extends MediathekGui {
      * @param numDownloads The number of active downloads.
      */
     private void setDownloadsBadge(int numDownloads) {
-        final Application app = Application.getApplication();
         if (numDownloads > 0)
-            app.setDockIconBadge(Integer.toString(numDownloads));
+            Taskbar.getTaskbar().setIconBadge(Integer.toString(numDownloads));
         else {
-            app.setDockIconBadge("");
+            Taskbar.getTaskbar().setIconBadge("");
         }
     }
 
@@ -138,17 +136,17 @@ public class MediathekGuiMac extends MediathekGui {
      * Setup the UI for OS X
      */
     private void setupUserInterfaceForOsx() {
-        final Application application = Application.getApplication();
-        application.disableSuddenTermination();
-        application.setAboutHandler(aboutEvent -> showAboutDialog());
-        application.setPreferencesHandler(preferencesEvent -> showSettingsDialog());
-        application.setQuitHandler((quitEvent, quitResponse) -> {
+        Desktop desktop = Desktop.getDesktop();
+        desktop.disableSuddenTermination();
+        desktop.setQuitHandler((e, response) -> {
             if (!beenden(false, false)) {
-                quitResponse.cancelQuit();
+                response.cancelQuit();
             } else {
-                quitResponse.performQuit();
+                response.performQuit();
             }
         });
+        desktop.setAboutHandler(e -> showAboutDialog());
+        desktop.setPreferencesHandler(e -> showSettingsDialog());
 
         //Remove all menu items which don´t need to be displayed due to OS X´s native menu support
         if (SystemInfo.isMacOSX()) {
@@ -163,10 +161,9 @@ public class MediathekGuiMac extends MediathekGui {
     private void setupDockIcon() {
         //setup the MediathekView Dock Icon
         try {
-            final Application application = Application.getApplication();
             final URL url = this.getClass().getResource("/mediathek/res/MediathekView.png");
             final BufferedImage appImage = ImageIO.read(url);
-            application.setDockIconImage(appImage);
+            Taskbar.getTaskbar().setIconImage(appImage);
         } catch (IOException ex) {
             Log.errorLog(165623698, "OS X Application image could not be loaded");
         }

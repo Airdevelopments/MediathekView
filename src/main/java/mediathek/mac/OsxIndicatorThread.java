@@ -1,10 +1,8 @@
 package mediathek.mac;
 
-import com.apple.eawt.Application;
 import mediathek.tool.threads.IndicatorThread;
 
 import java.awt.*;
-import java.awt.image.BufferedImage;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -12,45 +10,12 @@ import java.util.concurrent.TimeUnit;
  */
 class OsxIndicatorThread extends IndicatorThread {
 
-    /**
-     * The Image of the OS X application icon.
-     */
-    private Image OsxApplicationIconImage = null;
-    /**
-     * Stores the application image with the progress drawn on it
-     */
-    private BufferedImage newApplicationIcon = null;
-    private final int appIconWidth;
-    private final int appIconHeight;
     private boolean bFirstUpdate = true;
-    private final Application application = Application.getApplication();
-    private double oldPercentage = 0.0;
-
+    private double oldPercentage;
 
     public OsxIndicatorThread() {
         super();
         setName("OsxIndicatorThread");
-
-        OsxApplicationIconImage = application.getDockIconImage();
-        appIconWidth = OsxApplicationIconImage.getWidth(null);
-        appIconHeight = OsxApplicationIconImage.getHeight(null);
-        newApplicationIcon = new BufferedImage(appIconWidth, appIconHeight, BufferedImage.TYPE_INT_ARGB);
-    }
-
-    /**
-     * Draw the progress bar into the application icon and set dock icon.
-     *
-     * @param progressBarWidth width of the bar.
-     */
-    private void drawAndSetApplicationIconWithProgress(int progressBarWidth) {
-        Graphics g = newApplicationIcon.getGraphics();
-        g.drawImage(OsxApplicationIconImage, 0, 0, null);
-        g.setColor(Color.RED);
-        g.fillRect(0, appIconHeight - 20, appIconWidth, 20);
-        g.setColor(Color.GREEN);
-        g.fillRect(0, appIconHeight - 20, progressBarWidth, 20);
-        g.dispose();
-        application.setDockIconImage(newApplicationIcon);
     }
 
     @Override
@@ -58,10 +23,9 @@ class OsxIndicatorThread extends IndicatorThread {
         try {
             while (!isInterrupted()) {
                 final double percentage = calculateOverallPercentage();
-                final int progressBarWidth = (int) ((appIconWidth / 100.0) * percentage);
 
                 if (bFirstUpdate) {
-                    drawAndSetApplicationIconWithProgress(progressBarWidth);
+                    Taskbar.getTaskbar().setProgressValue(0);
                     bFirstUpdate = false;
                 }
 
@@ -69,7 +33,8 @@ class OsxIndicatorThread extends IndicatorThread {
                 if (percentage % 1 == 0) {
                     //if icon was already drawn, don´ do it again
                     if (oldPercentage != percentage) {
-                        drawAndSetApplicationIconWithProgress(progressBarWidth);
+                        final int percent = (int)percentage;
+                        Taskbar.getTaskbar().setProgressValue(percent);
                     }
 
                     oldPercentage = percentage;
@@ -79,7 +44,7 @@ class OsxIndicatorThread extends IndicatorThread {
         } catch (Exception ignored) {
         } finally {
             //reset the application dock icon
-            application.setDockIconImage(OsxApplicationIconImage);
+            Taskbar.getTaskbar().setProgressValue(100);
             oldPercentage = 0.0;
         }
     }
