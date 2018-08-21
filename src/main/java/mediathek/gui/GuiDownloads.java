@@ -43,6 +43,7 @@ import mediathek.gui.dialog.DialogEditDownload;
 import mediathek.gui.messages.DownloadRateLimitChangedEvent;
 import mediathek.gui.messages.StartEvent;
 import mediathek.gui.messages.UpdateStatusBarLeftDisplayEvent;
+import mediathek.javafx.FXDescriptionPanel;
 import mediathek.tool.*;
 import mediathek.tool.cellrenderer.CellRendererDownloads;
 import mediathek.tool.listener.BeobTableHeader;
@@ -177,8 +178,8 @@ public class GuiDownloads extends PanelVorlage {
     }
 
     private void setupDescriptionPanel() {
-        PanelFilmBeschreibung panelBeschreibung = new PanelFilmBeschreibung(daten, tabelle);
-        jPanelBeschreibung.add(panelBeschreibung, BorderLayout.CENTER);
+        FXDescriptionPanel panel = new FXDescriptionPanel(tabelle);
+        jPanelBeschreibung.add(panel, BorderLayout.CENTER);
     }
 
     @Override
@@ -188,7 +189,7 @@ public class GuiDownloads extends PanelVorlage {
             daten.getMediathekGui().tabPaneIndexProperty().setValue(MediathekGui.TabPaneIndex.DOWNLOAD);
         }
         updateFilmData();
-        Listener.notify(Listener.EREIGNIS_DOWNLOAD_BESCHREIBUNG_ANZEIGEN, PanelFilmBeschreibung.class.getSimpleName());
+        Listener.notify(Listener.EREIGNIS_DOWNLOAD_BESCHREIBUNG_ANZEIGEN, FXDescriptionPanel.class.getSimpleName());
 
     }
 
