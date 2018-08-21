@@ -177,7 +177,7 @@ public class GuiDownloads extends PanelVorlage {
     }
 
     private void setupDescriptionPanel() {
-        PanelFilmBeschreibung panelBeschreibung = new PanelFilmBeschreibung(daten, tabelle, false/*film*/);
+        PanelFilmBeschreibung panelBeschreibung = new PanelFilmBeschreibung(daten, tabelle);
         jPanelBeschreibung.add(panelBeschreibung, BorderLayout.CENTER);
     }
 

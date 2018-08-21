@@ -30,6 +30,7 @@ import jiconfont.swing.IconFontSwing;
 import mSearch.daten.DatenFilm;
 import mSearch.filmeSuchen.ListenerFilmeLaden;
 import mSearch.filmeSuchen.ListenerFilmeLadenEvent;
+import mSearch.tool.ApplicationConfiguration;
 import mSearch.tool.Datum;
 import mSearch.tool.Listener;
 import mSearch.tool.Log;
@@ -134,7 +135,7 @@ public class GuiFilme extends PanelVorlage {
      * Show description panel based on settings.
      */
     private void showDescriptionPanel() {
-        jPanelBeschreibung.setVisible(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_FILME_BESCHREIBUNG_ANZEIGEN)));
+        jPanelBeschreibung.setVisible(ApplicationConfiguration.getConfiguration().getBoolean(ApplicationConfiguration.FILM_SHOW_DESCRIPTION, true));
     }
 
     @Override
@@ -1186,11 +1187,10 @@ public class GuiFilme extends PanelVorlage {
 
     private void setupShowFilmDescriptionMenuItem() {
         JCheckBoxMenuItem cbk = ((MediathekGui) parentComponent).getFilmDescriptionMenuItem();
-        cbk.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_FILME_BESCHREIBUNG_ANZEIGEN)));
+        cbk.setSelected(ApplicationConfiguration.getConfiguration().getBoolean(ApplicationConfiguration.FILM_SHOW_DESCRIPTION, true));
         cbk.addActionListener(l -> jPanelBeschreibung.setVisible(cbk.isSelected()));
         cbk.addItemListener(e -> {
-            System.out.println("STATE CHANGED: " + cbk.isSelected());
-            MVConfig.add(MVConfig.Configs.SYSTEM_FILME_BESCHREIBUNG_ANZEIGEN, Boolean.toString(cbk.isSelected()));
+            ApplicationConfiguration.getConfiguration().setProperty(ApplicationConfiguration.FILM_SHOW_DESCRIPTION, cbk.isSelected());
         });
         jPanelBeschreibung.addComponentListener(new ComponentAdapter() {
             @Override

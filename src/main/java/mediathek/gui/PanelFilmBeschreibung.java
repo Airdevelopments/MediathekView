@@ -48,16 +48,14 @@ public class PanelFilmBeschreibung extends JPanel implements ListSelectionListen
     private DatenFilm currentFilm = null;
     private final JTable table;
 
-    public PanelFilmBeschreibung(Daten daten, JTable table, boolean film) {
+    public PanelFilmBeschreibung(Daten daten, JTable table) {
         initComponents();
         this.table = table;
 
         jCheckBoxBeschreibung.setIcon(IconFontSwing.buildIcon(FontAwesome.TIMES_CIRCLE_O, 16));
         jCheckBoxBeschreibung.addActionListener(e -> {
-            if (!film) {
-                MVConfig.add(MVConfig.Configs.SYSTEM_DOWNLOAD_BESCHREIBUNG_ANZEIGEN, Boolean.FALSE.toString());
-                Listener.notify(Listener.EREIGNIS_DOWNLOAD_BESCHREIBUNG_ANZEIGEN, PanelFilmBeschreibung.class.getSimpleName());
-            }
+            MVConfig.add(MVConfig.Configs.SYSTEM_DOWNLOAD_BESCHREIBUNG_ANZEIGEN, Boolean.FALSE.toString());
+            Listener.notify(Listener.EREIGNIS_DOWNLOAD_BESCHREIBUNG_ANZEIGEN, PanelFilmBeschreibung.class.getSimpleName());
         });
 
         hyperlinkButton.addActionListener(e -> {
