@@ -28,9 +28,6 @@ public class MediathekGuiMac extends MediathekGui {
         super();
 
         setupDockIcon();
-
-        //Window must be fully initialized to become fullscreen cadidate...
-        setWindowFullscreenCapability();
     }
 
     @Override
@@ -42,19 +39,6 @@ public class MediathekGuiMac extends MediathekGui {
     @Handler
     protected void handleInstallTabSwitchListenerEvent(InstallTabSwitchListenerEvent msg) {
         //do not use on OS X as it violates HIG...
-    }
-
-    /**
-     * Enable Fullscreen window mode on OS X.
-     * Depends on OS X only java classes.
-     */
-    private void setWindowFullscreenCapability() {
-        try {
-            Class.forName("com.apple.eawt.FullScreenUtilities")
-                    .getMethod("setWindowCanFullScreen", Window.class, boolean.class)
-                    .invoke(null, this, true);
-        } catch (Exception ignored) {
-        }
     }
 
     @Override
@@ -159,6 +143,7 @@ public class MediathekGuiMac extends MediathekGui {
     }
 
     private void setupDockIcon() {
+        //TODO maybe useful on other platforms as well?
         //setup the MediathekView Dock Icon
         try {
             final URL url = this.getClass().getResource("/mediathek/res/MediathekView.png");
