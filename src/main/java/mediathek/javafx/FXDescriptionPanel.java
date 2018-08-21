@@ -51,7 +51,7 @@ public class FXDescriptionPanel extends JFXPanel implements ListSelectionListene
 
         descTab.setContent(webView);
         descTab.setOnCloseRequest(e -> {
-            getParent().setVisible(false);
+            SwingUtilities.invokeLater(() -> getParent().setVisible(false));
             e.consume();
         });
 
