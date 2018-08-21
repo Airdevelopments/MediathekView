@@ -386,18 +386,6 @@ public class MediathekGui extends JFrame {
     }
 
     private void addListener() {
-        Listener.addListener(new Listener(Listener.EREIGNIS_FILM_BESCHREIBUNG_ANZEIGEN, MediathekGui.class.getSimpleName()) {
-            @Override
-            public void ping() {
-                setCbBeschreibung();
-            }
-        });
-        Listener.addListener(new Listener(Listener.EREIGNIS_DOWNLOAD_BESCHREIBUNG_ANZEIGEN, MediathekGui.class.getSimpleName()) {
-            @Override
-            public void ping() {
-                setCbBeschreibung();
-            }
-        });
         Listener.addListener(new Listener(Listener.EREIGNIS_DIALOG_MEDIA_DB, MediathekGui.class.getSimpleName()) {
             @Override
             public void ping() {
@@ -462,24 +450,6 @@ public class MediathekGui extends JFrame {
             this.setExtendedState(Frame.MAXIMIZED_BOTH);
         } else {
             GuiFunktionen.setSize(MVConfig.Configs.SYSTEM_GROESSE_GUI, this, null);
-        }
-    }
-
-    private void setCbBeschreibung() {
-        if (Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_FILME_BESCHREIBUNG_ANZEIGEN))
-                && Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_DOWNOAD_BESCHREIBUNG_ANZEIGEN))) {
-            //dann sind beide an
-            cbkBeschreibung.setSelected(true);
-            cbkBeschreibung.setForeground(null);
-        } else if (Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_FILME_BESCHREIBUNG_ANZEIGEN))
-                || Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_DOWNOAD_BESCHREIBUNG_ANZEIGEN))) {
-            //dann ists nur einer
-            cbkBeschreibung.setSelected(false);
-            cbkBeschreibung.setForeground(new java.awt.Color(0, 51, 153));
-        } else {
-            //keiner
-            cbkBeschreibung.setSelected(false);
-            cbkBeschreibung.setForeground(null);
         }
     }
 
@@ -767,6 +737,10 @@ public class MediathekGui extends JFrame {
         }
     }
 
+    public JCheckBoxMenuItem getFilmDescriptionMenuItem() {
+        return cbkBeschreibung;
+    }
+
     /**
      * Handle the install/or remove event sent from settings dialog
      *
@@ -793,7 +767,6 @@ public class MediathekGui extends JFrame {
     }
 
     protected void initMenue() {
-        setCbBeschreibung();
         installMenuTabSwitchListener();
 
         setMenuIcons();
@@ -827,13 +800,9 @@ public class MediathekGui extends JFrame {
             }
         });
         cbkBeschreibung.addActionListener(l -> {
-            //Filme
-            MVConfig.add(MVConfig.Configs.SYSTEM_FILME_BESCHREIBUNG_ANZEIGEN, String.valueOf(cbkBeschreibung.isSelected()));
-            Listener.notify(Listener.EREIGNIS_FILM_BESCHREIBUNG_ANZEIGEN, MediathekGui.class.getSimpleName());
             //Downloads
-            MVConfig.add(MVConfig.Configs.SYSTEM_DOWNOAD_BESCHREIBUNG_ANZEIGEN, String.valueOf(cbkBeschreibung.isSelected()));
+            MVConfig.add(MVConfig.Configs.SYSTEM_DOWNLOAD_BESCHREIBUNG_ANZEIGEN, String.valueOf(cbkBeschreibung.isSelected()));
             Listener.notify(Listener.EREIGNIS_DOWNLOAD_BESCHREIBUNG_ANZEIGEN, MediathekGui.class.getSimpleName());
-            setCbBeschreibung();
         });
 
         jCheckBoxMenuItemMediaDb.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_MEDIA_DB_DIALOG_ANZEIGEN)));
