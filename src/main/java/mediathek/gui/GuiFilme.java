@@ -127,7 +127,6 @@ public class GuiFilme extends PanelVorlage {
     private final JFXPanel fxPanel = new JFXPanel();
 
     private void setupDescriptionPanel() {
-        jPanelBeschreibung.setLayout(new BorderLayout());
         jPanelBeschreibung.add(new FXDescriptionPanel(tabelle), BorderLayout.CENTER);
     }
 
@@ -1189,9 +1188,7 @@ public class GuiFilme extends PanelVorlage {
         JCheckBoxMenuItem cbk = ((MediathekGui) parentComponent).getFilmDescriptionMenuItem();
         cbk.setSelected(ApplicationConfiguration.getConfiguration().getBoolean(ApplicationConfiguration.FILM_SHOW_DESCRIPTION, true));
         cbk.addActionListener(l -> jPanelBeschreibung.setVisible(cbk.isSelected()));
-        cbk.addItemListener(e -> {
-            ApplicationConfiguration.getConfiguration().setProperty(ApplicationConfiguration.FILM_SHOW_DESCRIPTION, cbk.isSelected());
-        });
+        cbk.addItemListener(e -> ApplicationConfiguration.getConfiguration().setProperty(ApplicationConfiguration.FILM_SHOW_DESCRIPTION, cbk.isSelected()));
         jPanelBeschreibung.addComponentListener(new ComponentAdapter() {
             @Override
             public void componentShown(ComponentEvent e) {
@@ -1262,16 +1259,7 @@ public class GuiFilme extends PanelVorlage {
         jTable1.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
         jScrollPane1.setViewportView(jTable1);
 
-        javax.swing.GroupLayout jPanelBeschreibungLayout = new javax.swing.GroupLayout(jPanelBeschreibung);
-        jPanelBeschreibung.setLayout(jPanelBeschreibungLayout);
-        jPanelBeschreibungLayout.setHorizontalGroup(
-                jPanelBeschreibungLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGap(0, 0, Short.MAX_VALUE)
-        );
-        jPanelBeschreibungLayout.setVerticalGroup(
-                jPanelBeschreibungLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGap(0, 155, Short.MAX_VALUE)
-        );
+        jPanelBeschreibung.setLayout(new java.awt.BorderLayout());
 
         jPanelExtra.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
 
@@ -1323,7 +1311,7 @@ public class GuiFilme extends PanelVorlage {
         jPanel1Layout.setVerticalGroup(
                 jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 264, Short.MAX_VALUE)
+                                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 419, Short.MAX_VALUE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jPanelBeschreibung, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
