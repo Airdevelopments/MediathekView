@@ -42,7 +42,6 @@ public class Listener implements EventListener {
     public static final int EREIGNIS_PROGRAMM_OEFFNEN = 16;
     public static final int EREIGNIS_PANEL_DOWNLOAD_FILTER_ANZEIGEN = 21;
     public static final int EREIGNIS_PANEL_ABO_FILTER_ANZEIGEN = 22;
-    public static final int EREIGNIS_FILM_BESCHREIBUNG_ANZEIGEN = 23;
     public static final int EREIGNIS_DOWNLOAD_BESCHREIBUNG_ANZEIGEN = 24;
 
     public static final int EREIGNIS_SUCHFELD_FOCUS_SETZEN = 26;

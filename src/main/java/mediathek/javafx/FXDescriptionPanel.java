@@ -7,9 +7,6 @@ import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
-import mediathek.config.Daten;
-
-import javax.swing.*;
 
 public class FXDescriptionPanel extends JFXPanel {
     public FXDescriptionPanel() {
@@ -33,11 +30,10 @@ public class FXDescriptionPanel extends JFXPanel {
         tabPane.getTabs().add(descTab);
 
         descTab.setContent(webView);
-        descTab.setOnClosed(e -> SwingUtilities.invokeLater(() -> {
-                    getParent().remove(this);
-                    Daten.getInstance().getMediathekGui().tabFilme.updateUI();
-                }
-        ));
+        descTab.setOnCloseRequest(e -> {
+            getParent().setVisible(false);
+            e.consume();
+        });
 
         return new Scene(tabPane);
     }

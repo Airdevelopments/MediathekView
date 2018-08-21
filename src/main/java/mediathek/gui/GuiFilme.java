@@ -145,7 +145,6 @@ public class GuiFilme extends PanelVorlage {
 
         updateFilmData();
         setInfoStatusbar();
-        Listener.notify(Listener.EREIGNIS_FILM_BESCHREIBUNG_ANZEIGEN, PanelFilmBeschreibung.class.getSimpleName());
     }
 
     public class FilterFilmAction extends AbstractAction {
@@ -422,12 +421,6 @@ public class GuiFilme extends PanelVorlage {
             public void ping() {
                 tabelle.fireTableDataChanged(true /*setSpalten*/);
                 setInfoStatusbar();
-            }
-        });
-        Listener.addListener(new Listener(Listener.EREIGNIS_FILM_BESCHREIBUNG_ANZEIGEN, GuiFilme.class.getSimpleName()) {
-            @Override
-            public void ping() {
-                showDescriptionPanel();
             }
         });
     }
@@ -1186,6 +1179,31 @@ public class GuiFilme extends PanelVorlage {
             setupZeitraumListener();
 
             fap.themaBox.setOnAction(evt -> SwingUtilities.invokeLater(this::reloadTable));
+        });
+
+        setupShowFilmDescriptionMenuItem();
+    }
+
+    private void setupShowFilmDescriptionMenuItem() {
+        JCheckBoxMenuItem cbk = ((MediathekGui) parentComponent).getFilmDescriptionMenuItem();
+        cbk.setSelected(Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_FILME_BESCHREIBUNG_ANZEIGEN)));
+        cbk.addActionListener(l -> jPanelBeschreibung.setVisible(cbk.isSelected()));
+        cbk.addItemListener(e -> {
+            System.out.println("STATE CHANGED: " + cbk.isSelected());
+            MVConfig.add(MVConfig.Configs.SYSTEM_FILME_BESCHREIBUNG_ANZEIGEN, Boolean.toString(cbk.isSelected()));
+        });
+        jPanelBeschreibung.addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentShown(ComponentEvent e) {
+                super.componentShown(e);
+                cbk.setSelected(true);
+            }
+
+            @Override
+            public void componentHidden(ComponentEvent e) {
+                super.componentHidden(e);
+                cbk.setSelected(false);
+            }
         });
     }
 
