@@ -90,7 +90,6 @@ import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.concurrent.*;
@@ -116,7 +115,6 @@ public class MediathekGui extends JFrame {
     private static final String LOG_TEXT_START_GUI = "Start Gui";
     private static final String LOG_TEXT_INIT_GUI = "Init GUI";
     private static final String LOG_TEXT_GUI_STEHT = "Gui steht!";
-    private static final String ARGUMENT_PREFIX = "-";
     private static final String TABNAME_FILME = "Filme";
     private static final String TABNAME_DOWNLOADS = "Downloads";
     private static final String TABNAME_ABOS = "Abos";
@@ -171,7 +169,7 @@ public class MediathekGui extends JFrame {
         final JFXPanel dummyPanel = new JFXPanel();
     }
 
-    public MediathekGui(String... aArguments) {
+    public MediathekGui() {
         super();
 
         splashScreenManager = new SplashScreenManager();
@@ -180,8 +178,6 @@ public class MediathekGui extends JFrame {
         initComponents();
 
         setWindowTitle();
-
-        String pfad = readPfadFromArguments(aArguments);
 
         Duration.counterStart(LOG_TEXT_PROGRAMMSTART);
 
@@ -193,7 +189,8 @@ public class MediathekGui extends JFrame {
 
         splashScreenManager.updateSplashScreenText(SPLASHSCREEN_TEXT_ANWENDUNGSDATEN_LADEN);
 
-        daten = Daten.getInstance(pfad,this);
+        daten = Daten.getInstance();
+        daten.setMediathekGui(this);
 
         startMeldungen();
         Duration.staticPing(LOG_TEXT_START);
@@ -373,35 +370,6 @@ public class MediathekGui extends JFrame {
         return tabPaneIndexProperty;
     }
 
-    private String readPfadFromArguments(final String[] aArguments) {
-        String pfad;
-        if (aArguments == null) {
-            pfad = "";
-        } else {
-            printArguments(aArguments);
-            if (aArguments.length > 0) {
-                if (!aArguments[0].startsWith(ARGUMENT_PREFIX)) {
-                    if (!aArguments[0].endsWith(File.separator)) {
-                        aArguments[0] += File.separator;
-                    }
-                    pfad = aArguments[0];
-                } else {
-                    pfad = "";
-                }
-            } else {
-                pfad = "";
-            }
-        }
-        return pfad;
-    }
-
-    private void printArguments(final String[] aArguments)
-    {
-        for (String argument : aArguments) {
-            logger.info("Startparameter: {}", argument);
-        }
-    }
-
     private static final Logger logger = LogManager.getLogger(MediathekGui.class);
 
     protected void createBandwidthMonitor(JFrame parent)
@@ -440,7 +408,7 @@ public class MediathekGui extends JFrame {
     }
 
     protected void setFocusOnSearchField() {
-        Listener.notify(Listener.EREIGNIS_SUCHFELD_FOCUS_SETZEN, MediathekGui.class.getName());
+        Platform.runLater(() -> tabFilme.fap.getSearchField().requestFocus());
     }
 
     /**
