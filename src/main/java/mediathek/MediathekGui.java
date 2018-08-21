@@ -801,7 +801,7 @@ public class MediathekGui extends JFrame {
         });
         cbkBeschreibung.addActionListener(l -> {
             //Downloads
-            MVConfig.add(MVConfig.Configs.SYSTEM_DOWNOAD_BESCHREIBUNG_ANZEIGEN, String.valueOf(cbkBeschreibung.isSelected()));
+            MVConfig.add(MVConfig.Configs.SYSTEM_DOWNLOAD_BESCHREIBUNG_ANZEIGEN, String.valueOf(cbkBeschreibung.isSelected()));
             Listener.notify(Listener.EREIGNIS_DOWNLOAD_BESCHREIBUNG_ANZEIGEN, MediathekGui.class.getSimpleName());
         });
 

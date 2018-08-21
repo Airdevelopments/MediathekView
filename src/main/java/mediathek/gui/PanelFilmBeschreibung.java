@@ -54,11 +54,8 @@ public class PanelFilmBeschreibung extends JPanel implements ListSelectionListen
 
         jCheckBoxBeschreibung.setIcon(IconFontSwing.buildIcon(FontAwesome.TIMES_CIRCLE_O, 16));
         jCheckBoxBeschreibung.addActionListener(e -> {
-            if (film) {
-                MVConfig.add(MVConfig.Configs.SYSTEM_FILME_BESCHREIBUNG_ANZEIGEN, Boolean.FALSE.toString());
-                //Listener.notify(Listener.EREIGNIS_FILM_BESCHREIBUNG_ANZEIGEN, PanelFilmBeschreibung.class.getSimpleName());
-            } else {
-                MVConfig.add(MVConfig.Configs.SYSTEM_DOWNOAD_BESCHREIBUNG_ANZEIGEN, Boolean.FALSE.toString());
+            if (!film) {
+                MVConfig.add(MVConfig.Configs.SYSTEM_DOWNLOAD_BESCHREIBUNG_ANZEIGEN, Boolean.FALSE.toString());
                 Listener.notify(Listener.EREIGNIS_DOWNLOAD_BESCHREIBUNG_ANZEIGEN, PanelFilmBeschreibung.class.getSimpleName());
             }
         });
