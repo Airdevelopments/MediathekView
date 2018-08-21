@@ -127,7 +127,7 @@ public class GuiFilme extends PanelVorlage {
 
     private void setupDescriptionPanel() {
         jPanelBeschreibung.setLayout(new BorderLayout());
-        jPanelBeschreibung.add(new FXDescriptionPanel(), BorderLayout.CENTER);
+        jPanelBeschreibung.add(new FXDescriptionPanel(tabelle), BorderLayout.CENTER);
     }
 
     /**
