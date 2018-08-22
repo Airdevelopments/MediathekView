@@ -90,14 +90,13 @@ public class FXDescriptionPanel extends JFXPanel implements ListSelectionListene
                 webEngine.loadContent("");
             } else {
                 // Beschreibung setzen
-                /*
-                <span style=\'color:blue;font-family: Helvetica; font-style: italic; font-weight: bold; font-size: 24px;\'>Helvetica Some other text 000</span>
-                 */
                 webEngine.loadContent(
                         "<html>"
                                 + "<span style=\'font-family: Helvetica; font-weight: bold;font-size: 14\'>" + (currentFilm.getSender().isEmpty() ? "" : currentFilm.getSender() + "  -  ")
                                 + currentFilm.getTitle() + "</span><br/><br/>"
                                 + "<span style=\'font-family: Helvetica; font-size: 14'>" + currentFilm.getDescription() + "</span>"
+                                + "<br/><br/>"
+                                + "<a href=\"http://www.heise.de\">Link zur Website</a>"
                                 + "</html>");
             }
         });
