@@ -815,12 +815,17 @@ public class MediathekGui extends JFrame {
         initializeAnsichtAbos();
         initializeAnsicht();
 
-        miShowMemoryMonitor.addActionListener(e -> Platform.runLater(this::showMemoryMonitor));
+        miShowMemoryMonitor.addActionListener(e -> showMemoryMonitor());
     }
 
     private void showMemoryMonitor() {
-        memoryMonitor = new MemoryMonitor();
-        memoryMonitor.show();
+        Platform.runLater(() -> {
+            if (memoryMonitor == null) {
+                memoryMonitor = new MemoryMonitor();
+            }
+
+            memoryMonitor.show();
+        });
     }
 
     private void initializeAnsicht()
