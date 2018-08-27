@@ -27,13 +27,6 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.embed.swing.JFXPanel;
-import javafx.event.Event;
-import javafx.scene.Scene;
-import javafx.scene.control.Label;
-import javafx.scene.control.ProgressBar;
-import javafx.scene.control.ProgressIndicator;
-import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 import jiconfont.icons.FontAwesome;
 import jiconfont.swing.IconFontSwing;
 import mSearch.Config;
@@ -68,6 +61,7 @@ import mediathek.gui.dialogEinstellungen.DialogEinstellungen;
 import mediathek.gui.filmInformation.InfoDialog;
 import mediathek.gui.messages.*;
 import mediathek.javafx.MemoryMonitor;
+import mediathek.javafx.ShutdownDialog;
 import mediathek.javafx.StartupProgressPanel;
 import mediathek.javafx.StatusBarController;
 import mediathek.res.GetIcon;
@@ -83,7 +77,6 @@ import net.engio.mbassy.listener.Handler;
 import org.apache.commons.configuration2.Configuration;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.tbee.javafx.scene.layout.MigPane;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -110,7 +103,6 @@ public class MediathekGui extends JFrame {
     private static final int ICON_HEIGHT = 58;
     private static final String KEY_F10 = "F10";
     private static final String NONE = "none";
-    private static final String LOG_TEXT_PROGRAMMSTART = "***Programmstart***";
     private static final String SPLASHSCREEN_TEXT_ANWENDUNGSDATEN_LADEN = "Anwendungsdaten laden...";
     private static final String LOG_TEXT_START = "Start";
     private static final String SPLASHSCREEN_TEXT_GUI_INITIALISIEREN = "GUI Initialisieren...";
@@ -179,8 +171,6 @@ public class MediathekGui extends JFrame {
         initComponents();
 
         setWindowTitle();
-
-        Duration.counterStart(LOG_TEXT_PROGRAMMSTART);
 
         setIconImage(GetIcon.getIcon(ICON_NAME, ICON_PATH, ICON_WIDTH, ICON_HEIGHT).getImage());
 
@@ -530,8 +520,6 @@ public class MediathekGui extends JFrame {
         }
     }
 
-    private static boolean geklickt;
-
     public GuiFilme tabFilme;
     public GuiDownloads tabDownloads;
     public GuiAbo tabAbos;
@@ -551,10 +539,6 @@ public class MediathekGui extends JFrame {
 
         jTabbedPane.addChangeListener(l -> {
             designTabs(); //damit das sel. Tab das richtige Icon bekommt
-            if (!geklickt) {
-                geklickt = true;
-                Duration.counterStop(LOG_TEXT_PROGRAMMSTART);
-            }
         });
     }
 
@@ -575,7 +559,7 @@ public class MediathekGui extends JFrame {
         } else {
             jTabbedPane.setTabPlacement(JTabbedPane.LEFT);
         }
-//            jTabbedPane.updateUI();
+
         for (int i = 0; i < jTabbedPane.getTabCount(); ++i) {
             Component c = jTabbedPane.getComponentAt(i);
             ImageIcon ic = null;
@@ -951,81 +935,6 @@ public class MediathekGui extends JFrame {
      */
     protected Configuration config = ApplicationConfiguration.getConfiguration();
 
-    /**
-     * Display a wait dialog with some status message to inform user what is happening currently.
-     */
-    private class ShutdownDialog {
-        private Label lblStatusText;
-        private Stage stage;
-        private ProgressBar progress;
-        private final double maxTasks;
-
-        ShutdownDialog(int maxTasks) {
-            this.maxTasks = maxTasks;
-
-            Platform.runLater(() -> {
-                stage = new Stage();
-                stage.setAlwaysOnTop(true);
-                stage.setResizable(false);
-                stage.setOnCloseRequest(Event::consume);
-                stage.initStyle(StageStyle.UNDECORATED);
-                stage.setTitle("Programm beenden");
-                stage.setScene(createScene());
-            });
-        }
-
-        void show() {
-            Platform.runLater(() -> {
-                stage.show();
-                stage.centerOnScreen();
-            });
-            setEnabled(false);
-        }
-
-        void hide() {
-            Platform.runLater(() -> stage.hide());
-            setEnabled(true);
-        }
-
-        void setStatusText(int task, String text) {
-            Platform.runLater(() -> {
-                final double percent = task / maxTasks;
-                progress.setProgress(percent);
-                String message = "(" + Integer.toString(task) + "/" + Integer.toString((int) maxTasks) + ") "
-                        + text;
-                lblStatusText.setText(message);
-            });
-            //give the user some time to read the messages
-            try {
-                Thread.sleep(250);
-            } catch (InterruptedException ignored) {
-            }
-        }
-
-        private Scene createScene() {
-            MigPane migPane = new MigPane(
-                    "hidemode 3",
-                    "[fill]" +
-                            "[fill]",
-                    "[]" +
-                            "[]" +
-                            "[]");
-
-            progress = new ProgressBar();
-            progress.setProgress(0d);
-            progress.setPrefWidth(450d);
-            progress.setMinWidth(350d);
-
-            migPane.add(new ProgressIndicator(), "cell 0 0 1 3");
-            lblStatusText = new Label("Offene Operationen müssen noch beendet werden.");
-            migPane.add(lblStatusText, "cell 1 0");
-            migPane.add(progress, "cell 1 1");
-            migPane.add(new Label(""), "cell 1 2");
-
-            return new Scene(migPane);
-        }
-    }
-
     private void closeMemoryMonitor() {
             if (memoryMonitor != null)
                 Platform.runLater(() -> memoryMonitor.close());
@@ -1076,7 +985,7 @@ public class MediathekGui extends JFrame {
 
         terminateUpdateTimer();
 
-        ShutdownDialog dialog = new ShutdownDialog(12);
+        ShutdownDialog dialog = new ShutdownDialog(this, 12);
         dialog.show();
 
         dialog.setStatusText(1, "Warte auf das Schreiben der Filmliste");
