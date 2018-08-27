@@ -252,9 +252,12 @@ public class MediathekGui extends JFrame {
     private MemoryMonitor memoryMonitor;
 
     private void createMemoryMonitor() {
-        Platform.runLater(() -> memoryMonitor = new MemoryMonitor());
-        if (Config.isDebuggingEnabled())
-            Platform.runLater(() -> memoryMonitor.show());
+        Platform.runLater(() -> {
+            if (Config.isDebuggingEnabled()) {
+                memoryMonitor = new MemoryMonitor();
+                memoryMonitor.show();
+            }
+        });
     }
 
     private void loadFilmlist() {
@@ -812,10 +815,12 @@ public class MediathekGui extends JFrame {
         initializeAnsichtAbos();
         initializeAnsicht();
 
-        miShowMemoryMonitor.addActionListener(e -> Platform.runLater(() -> {
-            if (!memoryMonitor.isShowing())
-                memoryMonitor.show();
-        }));
+        miShowMemoryMonitor.addActionListener(e -> Platform.runLater(this::showMemoryMonitor));
+    }
+
+    private void showMemoryMonitor() {
+        memoryMonitor = new MemoryMonitor();
+        memoryMonitor.show();
     }
 
     private void initializeAnsicht()
@@ -1051,10 +1056,8 @@ public class MediathekGui extends JFrame {
     }
 
     private void closeMemoryMonitor() {
-        if (Config.isDebuggingEnabled()) {
             if (memoryMonitor != null)
                 Platform.runLater(() -> memoryMonitor.close());
-        }
     }
 
     private void writeOldConfiguration() {
@@ -1078,6 +1081,12 @@ public class MediathekGui extends JFrame {
         GuiFunktionen.getSize(MVConfig.Configs.SYSTEM_GROESSE_ABO, frameAbo);
     }
 
+    private void terminateUpdateTimer() {
+        //do not search for updates anymore
+        if (updateCheckTimer != null)
+            updateCheckTimer.stop();
+    }
+
     public boolean beenden(boolean showOptionTerminate, boolean shutDown) {
         //write all settings if not done already...
         ApplicationConfiguration.getInstance().writeConfiguration();
@@ -1098,8 +1107,7 @@ public class MediathekGui extends JFrame {
 
         closeMemoryMonitor();
 
-        //do not search for updates anymore
-        updateCheckTimer.stop();
+        terminateUpdateTimer();
 
         ShutdownDialog dialog = new ShutdownDialog(12);
         dialog.show();
