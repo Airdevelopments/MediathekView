@@ -242,7 +242,7 @@ public class MediathekGui extends JFrame {
                     .convertRatesTo(TimeUnit.SECONDS)
                     .convertDurationsTo(TimeUnit.MICROSECONDS)
                     .build();
-            reporter.start(1, TimeUnit.MINUTES);
+            reporter.start(2, TimeUnit.MINUTES);
         }
     }
 
@@ -602,32 +602,29 @@ public class MediathekGui extends JFrame {
             }
 
             String s = jTabbedPane.getTitleAt(i);
-            JLabel lbl = makeLable(s, ic);
+            JLabel lbl = makeLable(s, ic, top);
             if (icon) {
                 jTabbedPane.setTabComponentAt(i, lbl);
             } else {
                 jTabbedPane.setTabComponentAt(i, null);
             }
         }
-
-//            jTabbedPane.updateUI();
     }
 
-    private JLabel makeLable(String text, ImageIcon ic) {
+    private JLabel makeLable(String text, ImageIcon ic, boolean top) {
         JLabel lbl = new JLabel(text);
 
         lbl.setBorder(null);
         lbl.setIcon(ic);
         lbl.setOpaque(false);
+        lbl.setBorder(new EmptyBorder(10, 5, 10, 5));
 
-        if (Boolean.parseBoolean(MVConfig.get(MVConfig.Configs.SYSTEM_TABS_TOP))) {
-            lbl.setBorder(new EmptyBorder(10, 5, 10, 5));
+        if (top) {
             lbl.setVerticalTextPosition(JLabel.CENTER);
             lbl.setVerticalAlignment(JLabel.CENTER);
             lbl.setHorizontalTextPosition(JLabel.RIGHT);
             lbl.setHorizontalAlignment(JLabel.LEFT);
         } else {
-            lbl.setBorder(new EmptyBorder(10, 5, 10, 5));
             lbl.setVerticalTextPosition(JLabel.TOP);
             lbl.setVerticalAlignment(JLabel.BOTTOM);
             lbl.setHorizontalTextPosition(JLabel.CENTER);
