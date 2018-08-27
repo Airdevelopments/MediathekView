@@ -71,7 +71,10 @@ import mediathek.javafx.MemoryMonitor;
 import mediathek.javafx.StartupProgressPanel;
 import mediathek.javafx.StatusBarController;
 import mediathek.res.GetIcon;
-import mediathek.tool.*;
+import mediathek.tool.GuiFunktionen;
+import mediathek.tool.MVFont;
+import mediathek.tool.MVMessageDialog;
+import mediathek.tool.MVSenderIconCache;
 import mediathek.tool.threads.IndicatorThread;
 import mediathek.tool.threads.UIFilmlistLoaderThread;
 import mediathek.update.CheckUpdate;
@@ -124,8 +127,6 @@ public class MediathekGui extends JFrame {
 
     private final Daten daten;
     private final SplashScreenManager splashScreenManager;
-    private MVFrame frameDownload;
-    private MVFrame frameAbo;
     private MVTray tray;
     private DialogEinstellungen dialogEinstellungen;
     private final MVSenderIconCache senderIconCache;
@@ -541,8 +542,13 @@ public class MediathekGui extends JFrame {
         tabFilme = new GuiFilme(daten, this);
 
         jTabbedPane.addTab(TABNAME_FILME, tabFilme);
+        jTabbedPane.addTab(TABNAME_DOWNLOADS, tabDownloads);
+        jTabbedPane.addTab(TABNAME_ABOS,tabAbos);
+        jTabbedPane.setSelectedIndex(0);
+        jTabbedPane.updateUI();
+        designTabs();
+        tabFilme.isShown();
 
-        initFrames();
         jTabbedPane.addChangeListener(l -> {
             designTabs(); //damit das sel. Tab das richtige Icon bekommt
             if (!geklickt) {
@@ -559,43 +565,6 @@ public class MediathekGui extends JFrame {
      */
     public void enableUpdateMenuItem(boolean enable) {
         miSearchForProgramUpdate.setEnabled(enable);
-    }
-
-    private void initFrames() {
-        setTab(frameDownload, tabDownloads, TABNAME_DOWNLOADS, 1);
-        setTab(frameAbo, tabAbos, TABNAME_ABOS, 2);
-
-        jTabbedPane.updateUI();
-        designTabs();
-        jTabbedPane.setSelectedIndex(0);
-        tabFilme.isShown();
-    }
-
-    private void hide(MVFrame frame, PanelVorlage panelVorlage) {
-        panelVorlage.solo = true;
-        if (frame != null) {
-            frame.dispose();
-        }
-        if (tabContain(panelVorlage)) {
-            jTabbedPane.remove(panelVorlage);
-        }
-    }
-
-    private void setTab(MVFrame frame, PanelVorlage panel, String titel, int nrTab) {
-        hide(frame, panel);
-        jTabbedPane.add(panel, nrTab);
-        jTabbedPane.setTitleAt(nrTab, titel);
-        panel.solo = false;
-    }
-
-    private boolean tabContain(Component check) {
-        Component[] c = jTabbedPane.getComponents();
-        for (Component co : c) {
-            if (co.equals(check)) {
-                return true;
-            }
-        }
-        return false;
     }
 
     private void designTabs() {
@@ -1080,10 +1049,6 @@ public class MediathekGui extends JFrame {
         bandwidthMonitor.writeConfig();
         // MediaDB
         GuiFunktionen.getSize(MVConfig.Configs.SYSTEM_MEDIA_DB_DIALOG_GROESSE, daten.getDialogMediaDB());
-
-        // Frames
-        GuiFunktionen.getSize(MVConfig.Configs.SYSTEM_GROESSE_DOWNLOAD, frameDownload);
-        GuiFunktionen.getSize(MVConfig.Configs.SYSTEM_GROESSE_ABO, frameAbo);
     }
 
     private void terminateUpdateTimer() {
